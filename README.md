@@ -133,6 +133,23 @@ working:
 
 Full schema reference: [context-yaml.schema.json](internal/schema/context-yaml.schema.json)
 
+## Scoring
+
+`ktext validate` scores your `CONTEXT.yaml` out of 100 across eight sections. Each section has a maximum point value based on how much it matters for context quality:
+
+| Section | Max |
+|---|---|
+| constraints | 20 |
+| identity | 15 |
+| decisions | 15 |
+| conventions | 15 |
+| risks | 10 |
+| dependencies | 10 |
+| working | 10 |
+| ownership | 5 |
+
+Points within each section are awarded for presence, completeness, and quality. A constraint that says "never expose raw credentials" scores higher than one that just says "be careful with secrets" — the scorer checks for actionable language, specific verbs, and sufficient detail. The `Fixes` output tells you exactly what to change to improve your score.
+
 ## Use in CI
 
 ```yaml
