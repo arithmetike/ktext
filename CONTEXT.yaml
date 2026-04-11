@@ -1,0 +1,88 @@
+# CONTEXT.yaml — machine-readable context for this repository
+# Schema: https://contextfile.org/schema/v1
+
+ktext: "1.0.0"
+identity:
+  name: ktext
+  url: https://github.com/thegagne/ktext
+  type: tool
+  status: experimental
+  purpose: Generate, validate, and export CONTEXT.yaml — a machine-readable project context file that AI coding agents and developer tools can read.
+
+constraints:
+  - content: Never add a database, server, or LLM dependency to this repo
+    why: ktext must work with zero setup — pure filesystem, single binary
+  - content: All exported schema types must mirror context-yaml.schema.json exactly
+    why: The JSON Schema is the source of truth; TypeScript and Go types are derived
+  - content: Commands must return int exit codes; only main() calls os.Exit
+    why: Keeps command functions testable without process-exit side effects
+
+decisions:
+  - title: Use Go instead of Node.js/TypeScript
+    rationale: Single binary distribution with zero runtime dependency on the user's machine. Three total transitive dependencies vs 65 npm packages.
+    status: accepted
+    date: "2026-04"
+  - title: Use stdlib flag package instead of cobra
+    rationale: Three subcommands do not justify a CLI framework dependency. flag.NewFlagSet per command is sufficient and keeps the dep count at zero.
+    status: accepted
+  - title: JSON Schema is the canonical source of truth for CONTEXT.yaml
+    rationale: Embedded via go:embed; validated at startup with ajv-equivalent (santhosh-tekuri/jsonschema). Go types mirror it but do not define it.
+    status: accepted
+
+conventions:
+  - rule: Use go:embed for the JSON schema file — never load it from disk at runtime
+    why: Single binary must work from any working directory
+  - rule: Write tests in the same package using the _test suffix (external test packages)
+    why: Tests the public API, not implementation details
+  - rule: Run go build ./cmd/ktext before testing CLI changes
+    why: The binary is linked from dist; source changes require a rebuild
+
+risks:
+  - content: Schema field renames will break existing CONTEXT.yaml files silently
+    severity: high
+    mitigation: The ktext version field enables future migration; never rename without a migration path
+  - content: flag package stops parsing at first non-flag argument — flags after positional args are silently ignored
+    severity: medium
+    mitigation: splitArgs() in args.go pre-separates flags from positional args before handing to flag.NewFlagSet
+
+dependencies:
+  - name: gopkg.in/yaml.v3
+    url: https://pkg.go.dev/gopkg.in/yaml.v3
+    relationship: depends_on
+    why: YAML parsing and serialization for CONTEXT.yaml files
+  - name: github.com/santhosh-tekuri/jsonschema
+    url: https://pkg.go.dev/github.com/santhosh-tekuri/jsonschema/v6
+    relationship: depends_on
+    why: JSON Schema draft 2020-12 validation — validates CONTEXT.yaml against the embedded schema at parse time
+
+working:
+  commands:
+    - command: go build ./cmd/ktext
+      description: build the ktext binary
+    - command: go test ./...
+      description: run all tests
+    - command: go vet ./...
+      description: vet and lint sources
+    - command: go build -o /usr/local/bin/ktext ./cmd/ktext
+      description: install ktext globally
+  structure:
+    - path: cmd/ktext/
+      description: CLI entry point, subcommand routing, and command handlers
+    - path: internal/schema/
+      description: CONTEXT.yaml types, JSON Schema validator, quality rules, and scorer
+    - path: internal/export/
+      description: Format renderers — claude-md, cursorrules, copilot, xml, json, yaml
+    - path: internal/scan/
+      description: Filesystem scanner used by ktext init
+  notes:
+    - Flags must come before positional args OR use splitArgs() — Go stdlib flag stops at first non-flag token
+    - The embedded schema (internal/schema/context-yaml.schema.json) is compiled once at init() startup
+    - go mod tidy will mark transitive deps as indirect in go.mod
+
+ownership:
+  team: thegagne
+  escalation: https://github.com/thegagne/ktext/issues
+
+links:
+  repository: https://github.com/thegagne/ktext
+  issues: https://github.com/thegagne/ktext/issues
