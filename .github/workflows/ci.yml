@@ -24,3 +24,8 @@ jobs:
 
       - name: Vet
         run: go vet ./...
+
+      - name: Validate CONTEXT.yaml
+        run: |
+          go build -o ktext ./cmd/ktext
+          ./ktext validate -threshold 90
