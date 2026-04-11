@@ -93,15 +93,12 @@ risks:
 dependencies:
   - name: gopkg.in/yaml.v3
     url: https://pkg.go.dev/gopkg.in/yaml.v3
-    relationship: depends_on
     why: YAML parsing and serialization for CONTEXT.yaml; handles anchors, multiline strings, and comment preservation
   - name: github.com/santhosh-tekuri/jsonschema/v6
     url: https://pkg.go.dev/github.com/santhosh-tekuri/jsonschema/v6
-    relationship: depends_on
     why: JSON Schema draft 2020-12 validation — validates CONTEXT.yaml documents against the embedded schema at parse time
   - name: golang.org/x/text
     url: https://pkg.go.dev/golang.org/x/text
-    relationship: depends_on
     why: Transitive dependency of santhosh-tekuri/jsonschema for Unicode text processing
 
 working:

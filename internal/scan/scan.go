@@ -520,10 +520,9 @@ func scanDependencies(repoPath string, log *[]string) []schema.Dependency {
 				for name := range all {
 					if strings.HasPrefix(name, orgPrefix) {
 						add(schema.Dependency{
-							Name:         strings.TrimPrefix(name, orgPrefix),
-							URL:          "https://www.npmjs.com/package/" + name,
-							Relationship: "depends_on",
-							Why:          "npm package " + name,
+							Name: strings.TrimPrefix(name, orgPrefix),
+							URL:  "https://www.npmjs.com/package/" + name,
+							Why:  "npm package " + name,
 						})
 					}
 				}
@@ -546,9 +545,8 @@ func scanDependencies(repoPath string, log *[]string) []schema.Dependency {
 				if strings.HasPrefix(dep, orgBase+"/") && dep != m[1] {
 					name := dep[strings.LastIndex(dep, "/")+1:]
 					add(schema.Dependency{
-						Name:         name,
-						URL:          "https://" + dep,
-						Relationship: "depends_on",
+						Name: name,
+						URL:  "https://" + dep,
 					})
 				}
 			}
@@ -563,10 +561,9 @@ func scanDependencies(repoPath string, log *[]string) []schema.Dependency {
 		}
 		for _, svc := range composeDepends(b) {
 			add(schema.Dependency{
-				Name:         svc,
-				URL:          "https://example.com/REPLACE-ME/" + svc,
-				Relationship: "calls",
-				Why:          "docker-compose service dependency",
+				Name: svc,
+				URL:  "https://example.com/REPLACE-ME/" + svc,
+				Why:  "docker-compose service dependency",
 			})
 		}
 	}

@@ -61,10 +61,9 @@ type Risk struct {
 
 // Dependency is an outgoing connection from this project to another system.
 type Dependency struct {
-	Name         string `yaml:"name"`
-	URL          string `yaml:"url"`
-	Relationship string `yaml:"relationship"`
-	Why          string `yaml:"why,omitempty"`
+	Name string `yaml:"name"`
+	URL  string `yaml:"url"`
+	Why  string `yaml:"why,omitempty"`
 }
 
 // Working holds information a developer or LLM needs to operate in the codebase.

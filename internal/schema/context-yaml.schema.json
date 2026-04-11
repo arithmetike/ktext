@@ -109,27 +109,11 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "url", "relationship"],
+        "required": ["name", "url"],
         "additionalProperties": false,
         "properties": {
           "name": { "type": "string" },
           "url": { "type": "string", "format": "uri" },
-          "relationship": {
-            "type": "string",
-            "enum": [
-              "calls",
-              "depends_on",
-              "part_of",
-              "extends",
-              "implements",
-              "publishes_to",
-              "subscribes_to",
-              "reads_from",
-              "writes_to",
-              "deploys_to",
-              "triggers"
-            ]
-          },
           "why": { "type": "string" }
         }
       }

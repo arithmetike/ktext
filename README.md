@@ -79,7 +79,6 @@ risks:
 dependencies:
   - name: PostgreSQL
     url: https://www.postgresql.org
-    relationship: depends_on
     why: Primary data store
 
 working:

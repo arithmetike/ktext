@@ -82,9 +82,9 @@ func renderXML(doc *schema.Context) string {
 		b.WriteString("  <dependencies>\n")
 		for _, d := range doc.Dependencies {
 			if d.Why != "" {
-				fmt.Fprintf(&b, "    <dep name=%q rel=%q>%s</dep>\n", d.Name, d.Relationship, xmlEsc(d.Why))
+				fmt.Fprintf(&b, "    <dep name=%q>%s</dep>\n", d.Name, xmlEsc(d.Why))
 			} else {
-				fmt.Fprintf(&b, "    <dep name=%q rel=%q/>\n", d.Name, d.Relationship)
+				fmt.Fprintf(&b, "    <dep name=%q/>\n", d.Name)
 			}
 		}
 		b.WriteString("  </dependencies>\n")

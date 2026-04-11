@@ -89,7 +89,7 @@ func TestHighSeverityRiskWithoutMitigationProducesFix(t *testing.T) {
 func TestDependencyWithoutWhyProducesFix(t *testing.T) {
 	doc := clone(minimal)
 	doc.Dependencies = []schema.Dependency{
-		{Name: "postgres", URL: "https://pg.test", Relationship: "depends_on"},
+		{Name: "postgres", URL: "https://pg.test"},
 	}
 	r := schema.ScoreDocument(&doc)
 	found := false
