@@ -1,8 +1,6 @@
 package export
 
 import (
-	"strings"
-
 	"github.com/arithmetike/ktext/internal/schema"
 )
 
@@ -13,11 +11,4 @@ func working(doc *schema.Context) *schema.Working {
 		return doc.Working
 	}
 	return &schema.Working{}
-}
-
-func capitalize(s string) string {
-	if s == "" {
-		return s
-	}
-	return strings.ToUpper(s[:1]) + s[1:]
 }

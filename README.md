@@ -36,18 +36,15 @@ Or download a binary from the [releases page](https://github.com/arithmetike/kte
 | `ktext init` | Scan the repo and generate `CONTEXT.yaml` |
 | `ktext validate` | Score quality; exits 1 if score < threshold |
 | `ktext validate -threshold 80` | Set minimum passing score |
-| `ktext export claude-md` | Render to `CLAUDE.md` |
+| `ktext export xml` | Render to XML |
 | `ktext export -list` | List all supported formats |
-| `ktext export -write cursorrules` | Write to `.cursorrules` |
+| `ktext export -write json` | Write to the conventional filename |
 
 ## Export formats
 
 | Format | Output file |
 |---|---|
 | `yaml` | `CONTEXT.yaml` |
-| `claude-md` | `CLAUDE.md` |
-| `cursorrules` | `.cursorrules` |
-| `copilot` | `.github/copilot-instructions.md` |
 | `xml` | `context.xml` |
 | `json` | `context.json` |
 

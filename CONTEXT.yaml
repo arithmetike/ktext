@@ -71,7 +71,7 @@ working:
     - path: internal/schema/
       description: CONTEXT.yaml types, JSON Schema validator, quality rules, and scorer
     - path: internal/export/
-      description: Format renderers — claude-md, cursorrules, copilot, xml, json, yaml
+      description: Format renderers — yaml, xml, json
     - path: internal/scan/
       description: Filesystem scanner used by ktext init
   notes:
