@@ -24,10 +24,10 @@ Run 'ktext validate' for detailed feedback.
 ## Install
 
 ```bash
-go install github.com/thegagne/ktext/cmd/ktext@latest
+go install github.com/arithmetike/ktext/cmd/ktext@latest
 ```
 
-Or download a binary from the [releases page](https://github.com/thegagne/ktext/releases).
+Or download a binary from the [releases page](https://github.com/arithmetike/ktext/releases).
 
 ## Commands
 

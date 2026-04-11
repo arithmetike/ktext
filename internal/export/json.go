@@ -3,7 +3,7 @@ package export
 import (
 	"encoding/json"
 
-	"github.com/thegagne/ktext/internal/schema"
+	"github.com/arithmetike/ktext/internal/schema"
 )
 
 func renderJSON(doc *schema.Context) (string, error) {

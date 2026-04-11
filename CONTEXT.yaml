@@ -4,7 +4,7 @@
 ktext: "1.0.0"
 identity:
   name: ktext
-  url: https://github.com/thegagne/ktext
+  url: https://github.com/arithmetike/ktext
   type: tool
   status: experimental
   purpose: Generate, validate, and export CONTEXT.yaml — a machine-readable project context file that AI coding agents and developer tools can read.
@@ -81,8 +81,8 @@ working:
 
 ownership:
   team: thegagne
-  escalation: https://github.com/thegagne/ktext/issues
+  escalation: https://github.com/arithmetike/ktext/issues
 
 links:
-  repository: https://github.com/thegagne/ktext
-  issues: https://github.com/thegagne/ktext/issues
+  repository: https://github.com/arithmetike/ktext
+  issues: https://github.com/arithmetike/ktext/issues

@@ -3,7 +3,7 @@ package export
 import (
 	"strings"
 
-	"github.com/thegagne/ktext/internal/schema"
+	"github.com/arithmetike/ktext/internal/schema"
 )
 
 // working returns doc.Working, substituting an empty struct when nil so

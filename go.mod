@@ -1,4 +1,4 @@
-module github.com/thegagne/ktext
+module github.com/arithmetike/ktext
 
 go 1.25.0
 

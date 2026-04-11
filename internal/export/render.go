@@ -4,7 +4,7 @@ package export
 import (
 	"fmt"
 
-	"github.com/thegagne/ktext/internal/schema"
+	"github.com/arithmetike/ktext/internal/schema"
 )
 
 // Format describes a supported output format.

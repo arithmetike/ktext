@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/thegagne/ktext/internal/scan"
-	"github.com/thegagne/ktext/internal/schema"
+	"github.com/arithmetike/ktext/internal/scan"
+	"github.com/arithmetike/ktext/internal/schema"
 	"gopkg.in/yaml.v3"
 )
 

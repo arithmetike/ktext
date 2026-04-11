@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/thegagne/ktext/internal/export"
-	"github.com/thegagne/ktext/internal/schema"
+	"github.com/arithmetike/ktext/internal/export"
+	"github.com/arithmetike/ktext/internal/schema"
 )
 
 func runExport(args []string) int {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/thegagne/ktext/internal/schema"
+	"github.com/arithmetike/ktext/internal/schema"
 )
 
 func renderCopilot(doc *schema.Context) string {
