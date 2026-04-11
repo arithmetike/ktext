@@ -24,6 +24,8 @@ constraints:
     why: ktext exports structured data — tool-specific rendering belongs in consuming tools, not the generator
   - content: Never load the JSON schema from disk at runtime — use go:embed only
     why: Binary must work from any working directory with no filesystem assumptions
+  - content: Any change to CLI commands, flags, schema fields, scoring logic, or export formats must be reflected in the documentation site (ktext.dev) before or alongside the release
+    why: The doc site is the primary reference for users — undocumented behavior changes silently break expectations
 
 decisions:
   - title: Use Go instead of Node.js/TypeScript
@@ -146,3 +148,4 @@ links:
   repository: https://github.com/arithmetike/ktext
   issues: https://github.com/arithmetike/ktext/issues
   releases: https://github.com/arithmetike/ktext/releases
+  docs: https://ktext.dev
