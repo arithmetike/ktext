@@ -76,6 +76,12 @@ risks:
     severity: high
     mitigation: Add rollback smoke test to CI before next release
 
+dependencies:
+  - name: PostgreSQL
+    url: https://www.postgresql.org
+    relationship: depends_on
+    why: Primary data store
+
 working:
   commands:
     - command: make build
