@@ -7,82 +7,145 @@ identity:
   url: https://github.com/arithmetike/ktext
   type: tool
   status: experimental
-  purpose: Generate, validate, and export CONTEXT.yaml — a machine-readable project context file that AI coding agents and developer tools can read.
+  purpose: >-
+    CLI tool that generates, validates, and exports CONTEXT.yaml — a machine-readable
+    project context file for AI coding agents and developer tools. Scans a repository
+    to discover identity, build commands, architecture decisions, and conventions,
+    then scores and exports the result as yaml, xml, or json.
 
 constraints:
   - content: Never add a database, server, or LLM dependency to this repo
-    why: ktext must work with zero setup — pure filesystem, single binary
-  - content: All exported schema types must mirror context-yaml.schema.json exactly
-    why: The JSON Schema is the source of truth; TypeScript and Go types are derived
-  - content: Commands must return int exit codes; only main() calls os.Exit
-    why: Keeps command functions testable without process-exit side effects
+    why: ktext must work with zero setup — pure filesystem operations, single statically-linked binary
+  - content: All Go types in internal/schema/context.go must mirror context-yaml.schema.json exactly
+    why: The JSON Schema is the canonical source of truth; Go types are derived, not authoritative
+  - content: Command functions must return int exit codes; only main() may call os.Exit
+    why: Makes runInit/runValidate/runExport testable without spawning subprocesses
+  - content: Do not add tool-specific export formats (e.g. claude-md, cursorrules, copilot)
+    why: ktext exports structured data — tool-specific rendering belongs in consuming tools, not the generator
+  - content: Never load the JSON schema from disk at runtime — use go:embed only
+    why: Binary must work from any working directory with no filesystem assumptions
 
 decisions:
   - title: Use Go instead of Node.js/TypeScript
-    rationale: Single binary distribution with zero runtime dependency on the user's machine. Three total transitive dependencies vs 65 npm packages.
+    rationale: >-
+      Single statically-linked binary with zero runtime dependency on the user's machine.
+      Three total transitive dependencies vs 65 npm packages in the prior Node implementation.
+      Cross-compiles trivially for linux/darwin/windows × amd64/arm64 via GoReleaser.
     status: accepted
     date: "2026-04"
-  - title: Use stdlib flag package instead of cobra
-    rationale: Three subcommands do not justify a CLI framework dependency. flag.NewFlagSet per command is sufficient and keeps the dep count at zero.
+  - title: Use stdlib flag package instead of cobra or urfave/cli
+    rationale: >-
+      Three subcommands (init, validate, export) do not justify a CLI framework dependency.
+      flag.NewFlagSet per command is sufficient. splitArgs() in args.go handles the stdlib
+      limitation of stopping at the first non-flag token.
     status: accepted
+    date: "2026-04"
   - title: JSON Schema is the canonical source of truth for CONTEXT.yaml
-    rationale: Embedded via go:embed; validated at startup with ajv-equivalent (santhosh-tekuri/jsonschema). Go types mirror it but do not define it.
+    rationale: >-
+      Embedded via go:embed and compiled once at init() startup via santhosh-tekuri/jsonschema.
+      Go types in context.go mirror the schema but do not define it. Changing field names
+      requires updating both together; the schema wins on conflicts.
     status: accepted
+    date: "2026-04"
+  - title: Fail-fast schema compilation at init()
+    rationale: >-
+      If the embedded schema is malformed, the binary panics immediately on startup rather
+      than returning a confusing validation error mid-run. This catches build-time mistakes
+      at the earliest possible moment.
+    status: accepted
+    date: "2026-04"
+  - title: Export formats are data-only — yaml, xml, json
+    rationale: >-
+      Tool-specific formats (claude-md, cursorrules, copilot) were removed because they
+      duplicate what consuming tools should own. ktext's job is to produce a clean data
+      representation; downstream tools render it for their own context.
+    status: accepted
+    date: "2026-04"
 
 conventions:
-  - rule: Use go:embed for the JSON schema file — never load it from disk at runtime
+  - rule: Use go:embed for the JSON schema — never construct a path to load it from disk
     why: Single binary must work from any working directory
-  - rule: Write tests in the same package using the _test suffix (external test packages)
-    why: Tests the public API, not implementation details
-  - rule: Run go build ./cmd/ktext before testing CLI changes
-    why: The binary is linked from dist; source changes require a rebuild
+  - rule: Write tests as external test packages (_test suffix on package name)
+    why: Tests the exported API, not implementation internals — catches accidental coupling
+  - rule: Run `go build ./cmd/ktext` before manually testing CLI changes
+    why: The installed binary (go install or /usr/local/bin/ktext) is not rebuilt automatically
+  - rule: Use splitArgs() in every command that accepts both flags and positional args before calling flag.Parse
+    why: Go stdlib flag.Parse stops at the first non-flag token — flags after positional args are silently ignored
+  - rule: Use min(score, max) before returning a SectionResult to keep section scores within their declared ceiling
+    why: Total score must remain <= 100; floating-point rounding can push a section over without the cap
+  - rule: Call strings.ToLower on input before running regexp matches in CheckQuality
+    why: Ensures quality rules fire regardless of capitalization in user-authored CONTEXT.yaml files
 
 risks:
-  - content: Schema field renames will break existing CONTEXT.yaml files silently
+  - content: Schema field renames break existing CONTEXT.yaml files silently at parse time
     severity: high
-    mitigation: The ktext version field enables future migration; never rename without a migration path
-  - content: flag package stops parsing at first non-flag argument — flags after positional args are silently ignored
+    mitigation: The ktext version field enables migration tooling; never rename a field without a documented migration path and a version bump
+  - content: splitArgs() has edge cases with -flag value vs -flag=value for string flags following positional args
     severity: medium
-    mitigation: splitArgs() in args.go pre-separates flags from positional args before handing to flag.NewFlagSet
+    mitigation: Covered by unit tests in args_test.go; add a case before changing the parser
+  - content: santhosh-tekuri/jsonschema v6 API is not stable — minor version bumps have broken callers before
+    severity: medium
+    mitigation: Pin the exact version in go.mod; read release notes before running go get
+  - content: ktext init scanner heuristics are brittle for non-standard repo layouts
+    severity: low
+    mitigation: All scanner output is reviewed interactively by the user before writing — bad guesses are correctable
 
 dependencies:
   - name: gopkg.in/yaml.v3
     url: https://pkg.go.dev/gopkg.in/yaml.v3
     relationship: depends_on
-    why: YAML parsing and serialization for CONTEXT.yaml files
-  - name: github.com/santhosh-tekuri/jsonschema
+    why: YAML parsing and serialization for CONTEXT.yaml; handles anchors, multiline strings, and comment preservation
+  - name: github.com/santhosh-tekuri/jsonschema/v6
     url: https://pkg.go.dev/github.com/santhosh-tekuri/jsonschema/v6
     relationship: depends_on
-    why: JSON Schema draft 2020-12 validation — validates CONTEXT.yaml against the embedded schema at parse time
+    why: JSON Schema draft 2020-12 validation — validates CONTEXT.yaml documents against the embedded schema at parse time
+  - name: golang.org/x/text
+    url: https://pkg.go.dev/golang.org/x/text
+    relationship: depends_on
+    why: Transitive dependency of santhosh-tekuri/jsonschema for Unicode text processing
 
 working:
   commands:
     - command: go build ./cmd/ktext
-      description: build the ktext binary
+      description: build the ktext binary into the current directory
+    - command: go build -o /usr/local/bin/ktext ./cmd/ktext
+      description: build and install ktext globally
     - command: go test ./...
       description: run all tests
     - command: go vet ./...
-      description: vet and lint sources
-    - command: go build -o /usr/local/bin/ktext ./cmd/ktext
-      description: install ktext globally
+      description: vet all sources
+    - command: go test -run TestName ./internal/schema/
+      description: run a single named test
+    - command: ktext validate
+      description: validate and score this repo's own CONTEXT.yaml
+    - command: ktext export xml
+      description: render CONTEXT.yaml to context.xml for LLM injection
   structure:
     - path: cmd/ktext/
-      description: CLI entry point, subcommand routing, and command handlers
+      description: CLI entry point (main.go), subcommand handlers (init.go, validate.go, export.go), flag parser (args.go), and usage text (usage.go)
     - path: internal/schema/
-      description: CONTEXT.yaml types, JSON Schema validator, quality rules, and scorer
+      description: CONTEXT.yaml Go types (context.go), JSON Schema parser/validator (parse.go), quality checker (quality.go), section scorer (score.go), and embedded schema JSON
     - path: internal/export/
-      description: Format renderers — yaml, xml, json
+      description: Format dispatch (render.go), YAML renderer (yaml.go), XML renderer (xml.go), JSON renderer (json.go), and shared helpers (helpers.go)
     - path: internal/scan/
-      description: Filesystem scanner used by ktext init
+      description: Filesystem scanner used by ktext init — discovers identity, build commands, structure, decisions, conventions, and dependencies from repo contents
+    - path: .github/workflows/
+      description: CI pipeline (ci.yml) and GoReleaser release pipeline (release.yml)
   notes:
-    - Flags must come before positional args OR use splitArgs() — Go stdlib flag stops at first non-flag token
-    - The embedded schema (internal/schema/context-yaml.schema.json) is compiled once at init() startup
-    - go mod tidy will mark transitive deps as indirect in go.mod
+    - "Go stdlib flag.Parse stops at the first non-flag argument — always route through splitArgs() or put flags first"
+    - "The embedded schema is compiled once at package init() — a corrupt schema panics immediately on startup"
+    - "go mod tidy marks golang.org/x/text as indirect in go.mod — this is expected and correct"
+    - "GoReleaser produces binaries for linux/darwin/windows × amd64/arm64 — triggered by pushing a v* tag"
+    - "ktext validate on this repo should score 95+ — if it drops, fix the CONTEXT.yaml before merging"
 
 ownership:
   team: thegagne
+  maintainers:
+    - name: thegagne
+      role: author and maintainer
   escalation: https://github.com/arithmetike/ktext/issues
 
 links:
   repository: https://github.com/arithmetike/ktext
   issues: https://github.com/arithmetike/ktext/issues
+  releases: https://github.com/arithmetike/ktext/releases
