@@ -6,7 +6,7 @@ identity:
   name: ktext
   url: https://github.com/arithmetike/ktext
   type: tool
-  status: experimental
+  status: active
   purpose: >-
     CLI tool that generates, validates, and exports CONTEXT.yaml — a machine-readable
     project context file for AI coding agents and developer tools. Scans a repository
