@@ -21,68 +21,68 @@ type Context struct {
 
 // Identity describes what the project is.
 type Identity struct {
-	Name    string `yaml:"name"`
-	URL     string `yaml:"url"`
-	Type    string `yaml:"type,omitempty"`
-	Purpose string `yaml:"purpose,omitempty"`
-	Status  string `yaml:"status,omitempty"`
+	Name    string `yaml:"name"                json:"name"`
+	URL     string `yaml:"url"                 json:"url"`
+	Type    string `yaml:"type,omitempty"       json:"type,omitempty"`
+	Purpose string `yaml:"purpose,omitempty"    json:"purpose,omitempty"`
+	Status  string `yaml:"status,omitempty"     json:"status,omitempty"`
 }
 
 // Constraint is a rule engineers or AI must not violate.
 type Constraint struct {
-	Content string `yaml:"content"`
-	Scope   string `yaml:"scope,omitempty"`
-	Why     string `yaml:"why,omitempty"`
+	Content string `yaml:"content"        json:"content"`
+	Scope   string `yaml:"scope,omitempty" json:"scope,omitempty"`
+	Why     string `yaml:"why,omitempty"   json:"why,omitempty"`
 }
 
 // Decision records an architectural choice and its rationale.
 type Decision struct {
-	Title     string `yaml:"title"`
-	Rationale string `yaml:"rationale"`
-	Date      string `yaml:"date,omitempty"`
-	Status    string `yaml:"status,omitempty"`
-	Reference string `yaml:"reference,omitempty"`
+	Title     string `yaml:"title"              json:"title"`
+	Rationale string `yaml:"rationale"           json:"rationale"`
+	Date      string `yaml:"date,omitempty"      json:"date,omitempty"`
+	Status    string `yaml:"status,omitempty"    json:"status,omitempty"`
+	Reference string `yaml:"reference,omitempty" json:"reference,omitempty"`
 }
 
 // Convention is a coding or process rule for the project.
 type Convention struct {
-	Rule      string `yaml:"rule"`
-	Scope     string `yaml:"scope,omitempty"`
-	Why       string `yaml:"why,omitempty"`
-	Reference string `yaml:"reference,omitempty"`
+	Rule      string `yaml:"rule"               json:"rule"`
+	Scope     string `yaml:"scope,omitempty"     json:"scope,omitempty"`
+	Why       string `yaml:"why,omitempty"       json:"why,omitempty"`
+	Reference string `yaml:"reference,omitempty" json:"reference,omitempty"`
 }
 
 // Risk is a known vulnerability, tech-debt item, or operational risk.
 type Risk struct {
-	Content    string `yaml:"content"`
-	Severity   string `yaml:"severity"` // "high" | "medium" | "low"
-	Mitigation string `yaml:"mitigation,omitempty"`
+	Content    string `yaml:"content"              json:"content"`
+	Severity   string `yaml:"severity"             json:"severity"` // "high" | "medium" | "low"
+	Mitigation string `yaml:"mitigation,omitempty" json:"mitigation,omitempty"`
 }
 
 // Dependency is an outgoing connection from this project to another system.
 type Dependency struct {
-	Name string `yaml:"name"`
-	URL  string `yaml:"url"`
-	Why  string `yaml:"why,omitempty"`
+	Name string `yaml:"name"           json:"name"`
+	URL  string `yaml:"url"            json:"url"`
+	Why  string `yaml:"why,omitempty"  json:"why,omitempty"`
 }
 
 // Working holds information a developer or LLM needs to operate in the codebase.
 type Working struct {
-	Commands  []Command        `yaml:"commands,omitempty"`
-	Structure []StructureEntry `yaml:"structure,omitempty"`
-	Notes     []string         `yaml:"notes,omitempty"`
+	Commands  []Command        `yaml:"commands,omitempty"  json:"commands,omitempty"`
+	Structure []StructureEntry `yaml:"structure,omitempty" json:"structure,omitempty"`
+	Notes     []string         `yaml:"notes,omitempty"     json:"notes,omitempty"`
 }
 
 // Command is a runnable shell command with a description.
 type Command struct {
-	Command     string `yaml:"command"`
-	Description string `yaml:"description"`
+	Command     string `yaml:"command"     json:"command"`
+	Description string `yaml:"description" json:"description"`
 }
 
 // StructureEntry describes a path within the project.
 type StructureEntry struct {
-	Path        string `yaml:"path"`
-	Description string `yaml:"description"`
+	Path        string `yaml:"path"        json:"path"`
+	Description string `yaml:"description" json:"description"`
 }
 
 // Links is an open map of name → URL.
@@ -90,13 +90,13 @@ type Links map[string]string
 
 // Ownership records who maintains the project.
 type Ownership struct {
-	Team        string       `yaml:"team,omitempty"`
-	Escalation  string       `yaml:"escalation,omitempty"`
-	Maintainers []Maintainer `yaml:"maintainers,omitempty"`
+	Team        string       `yaml:"team,omitempty"        json:"team,omitempty"`
+	Escalation  string       `yaml:"escalation,omitempty"  json:"escalation,omitempty"`
+	Maintainers []Maintainer `yaml:"maintainers,omitempty" json:"maintainers,omitempty"`
 }
 
 // Maintainer is a named person responsible for the project.
 type Maintainer struct {
-	Name string `yaml:"name"`
-	Role string `yaml:"role,omitempty"`
+	Name string `yaml:"name"           json:"name"`
+	Role string `yaml:"role,omitempty" json:"role,omitempty"`
 }

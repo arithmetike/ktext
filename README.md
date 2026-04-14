@@ -18,10 +18,11 @@ Or download a binary from the [releases page](https://github.com/arithmetike/kte
 
 ### `ktext init`
 
-Scans the repo and generates a `CONTEXT.yaml`. Reads your README, package manifests, Makefile, ADRs, and directory structure to make initial guesses, then walks you through each field interactively. Hit Enter to accept a value or type a replacement. Nothing is written until you finish the review.
+Scans the repo and generates a `CONTEXT.yaml`. Reads your README, package manifests, Makefile, ADRs, and directory structure to fill in what it can, writes the file immediately, and reports what was discovered and what still needs manual editing. Use `-interactive` to review and edit each value before writing.
 
 ```bash
-ktext init
+ktext init                  # scan and write immediately
+ktext init -interactive     # review each value before writing
 ```
 
 ### `ktext validate`

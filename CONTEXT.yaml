@@ -90,7 +90,7 @@ risks:
     mitigation: Pin the exact version in go.mod; read release notes before running go get
   - content: ktext init scanner heuristics are brittle for non-standard repo layouts
     severity: low
-    mitigation: All scanner output is reviewed interactively by the user before writing — bad guesses are correctable
+    mitigation: Scanner output is written immediately by default; use -interactive to review before writing — bad guesses are correctable
 
 dependencies:
   - name: gopkg.in/yaml.v3
