@@ -513,7 +513,10 @@ func scanDependencies(repoPath string, log *[]string) []schema.Dependency {
 				orgPrefix = m[1] + "/"
 			}
 			if orgPrefix != "" {
-				all := pkg.Dependencies
+				all := make(map[string]string)
+				for k, v := range pkg.Dependencies {
+					all[k] = v
+				}
 				for k, v := range pkg.DevDeps {
 					all[k] = v
 				}

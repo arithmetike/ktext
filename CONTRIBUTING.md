@@ -16,7 +16,7 @@ go test ./...                 # test
 go vet ./...                  # vet
 ```
 
-Go 1.22+ required. No other tooling needed.
+Go 1.25+ required. No other tooling needed.
 
 ## Project layout
 
@@ -51,7 +51,7 @@ Export formats live in `internal/export/`. To add one:
 
 ### Scanner heuristics
 
-`internal/scan/scan.go` discovers project context from the filesystem. Scanner output is always reviewed interactively by the user before being written, so false positives are acceptable. False negatives (missing real information) are worse. When in doubt, surface the data and let the user decide.
+`internal/scan/scan.go` discovers project context from the filesystem. Scanner output is written immediately by default; use `-interactive` to review before writing. False positives are acceptable. False negatives (missing real information) are worse. When in doubt, surface the data and let the user decide.
 
 ## Tests
 
